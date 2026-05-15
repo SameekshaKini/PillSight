@@ -50,21 +50,28 @@ def attention_rollout(attn_weights: list[torch.Tensor]) -> np.ndarray:
     return mask.cpu().numpy()
 
 
-def register_hooks(model):
-    """Attach forward hooks to every attention block; returns list that fills in-place."""
+def get_attention_weights(model, tensor):
+    """Extract attention weights by temporarily patching need_weights=True."""
     attentions = []
 
-    def hook_fn(module, input, output):
-        # torchvision ViT: EncoderBlock.self_attention is nn.MultiheadAttention
-        # output is (attn_output, attn_weights); need_weights must be True
-        attentions.append(output[1].detach())
+    def hook_fn(module, args, kwargs, output):
+        with torch.no_grad():
+            _, attn = module(args[0], args[0], args[0], need_weights=True, average_attn_weights=False)
+        attentions.append(attn.detach())
+        return output
 
     handles = []
     for block in model.vit.encoder.layers:
-        h = block.self_attention.register_forward_hook(hook_fn)
+        h = block.self_attention.register_forward_hook(hook_fn, with_kwargs=True)
         handles.append(h)
 
-    return attentions, handles
+    with torch.no_grad():
+        logits = model(tensor)
+
+    for h in handles:
+        h.remove()
+
+    return logits, attentions
 
 
 # ── Main ───────────────────────────────────────────────────────────────────────
@@ -99,11 +106,7 @@ def visualize():
         pil_img  = Image.open(img_path).convert("RGB").resize((IMAGE_SIZE, IMAGE_SIZE))
         tensor   = preprocess(pil_img).unsqueeze(0).to(device)
 
-        attentions, handles = register_hooks(model)
-        with torch.no_grad():
-            logits = model(tensor)
-        for h in handles:
-            h.remove()
+        logits, attentions = get_attention_weights(model, tensor)
 
         pred_idx  = logits.argmax(1).item()
         pred_name = idx_to_class[pred_idx]
