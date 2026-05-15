@@ -33,12 +33,12 @@ PRETRAINED    = True        # start from ImageNet-21k weights
 
 # ── Training ───────────────────────────────────────────────────────────────────
 BATCH_SIZE    = 32
-NUM_EPOCHS    = 20
-LR            = 2e-4        # base learning rate for the classifier head
-BACKBONE_LR   = 1e-5        # lower LR for the frozen→unfrozen ViT backbone
+NUM_EPOCHS    = 30
+LR            = 3e-4        # base learning rate for the classifier head
+BACKBONE_LR   = 5e-5        # lower LR for the frozen→unfrozen ViT backbone
 WEIGHT_DECAY  = 1e-4
 LABEL_SMOOTH  = 0.1         # label-smoothing epsilon
-UNFREEZE_EPOCH = 5          # epoch at which backbone layers are unfrozen
+UNFREEZE_EPOCH = 3          # epoch at which backbone layers are unfrozen
 
 # ── Augmentation ───────────────────────────────────────────────────────────────
 MIXUP_ALPHA   = 0.2         # 0 = disabled
