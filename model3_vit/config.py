@@ -13,7 +13,7 @@ DATA_DIR          = os.path.join(_ROOT, "data")
 CSV_PATH          = os.path.join(DATA_DIR, "all_labels.csv")
 FILTERED_CSV      = os.path.join(DATA_DIR, "filtered_metadata.csv")   # written by data_exploration.py
 CLASS_MAP_PATH    = os.path.join(DATA_DIR, "class_map.json")           # written by data_exploration.py
-IMAGE_ROOT        = os.path.join(DATA_DIR, "classification_data", "segmented_nih_pills_224")
+IMAGE_ROOT        = os.path.join(DATA_DIR, "classification_data")
 
 CHECKPOINT_DIR    = os.path.join(os.path.dirname(__file__), "checkpoints")
 OUTPUT_DIR        = os.path.join(os.path.dirname(__file__), "outputs")
