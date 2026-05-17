@@ -94,8 +94,7 @@ for epoch in range(1, NUM_EPOCHS + 1):
     history["train_acc"].append(t_acc)
     history["val_acc"].append(v_acc)
 
-    print(f"Epoch {epoch:02d}/{NUM_EPOCHS} | "
-          f"Train Acc: {t_acc:.4f} | Val Acc: {v_acc:.4f}")
+    print(f"Epoch {epoch:02d}/{NUM_EPOCHS} | Train Acc: {t_acc:.4f} | Val Acc: {v_acc:.4f}")
 
     if v_acc > best_val_acc:
         best_val_acc = v_acc
